@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 // This class is intended to hold extension methods related to CMYK color space.
