@@ -67,6 +67,7 @@ public class Player : IDamageable
         public bool IsDefeated() { return C <= 0 && M <= 0 && Y <= 0 && K <= 0; }
     }
     public PlayerHealth health;
+    private HealthBar healthBar;
     public int energy = 1;
     public int maxHandSize = 7;
     public event Action<int, PlayerHealth> OnHealthChanged;

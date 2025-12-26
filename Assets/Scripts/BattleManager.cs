@@ -13,6 +13,13 @@ public class BattleManager : MonoBehaviour
         Won,
         Lost
     }
+    [Serializable]
+    private class Refs
+    {
+        [SerializeField] HealthBar healthBar;
+        public HealthBar HealthBar => healthBar;
+    }
+    [SerializeField] private Refs refs;
     private CardManager cardManager;
     public CardManager CardManager => cardManager;
     private Player player;
@@ -30,6 +37,7 @@ public class BattleManager : MonoBehaviour
         {
             player = new Player();
         }
+        refs.HealthBar.Init(player);
         cardManager = new CardManager();
         cardManager.drawPile = new List<Cards>(CardManager.deck);
         cardManager.Shuffle(cardManager.drawPile);

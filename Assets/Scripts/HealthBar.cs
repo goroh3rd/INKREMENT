@@ -7,7 +7,13 @@ public class HealthBar : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer healthBarElement;
     [SerializeField] private SpriteRenderer heartIcon;
+    private Player player;
     private List<SpriteRenderer> healthBarElements = new List<SpriteRenderer>();
+    public void Init(Player p)
+    {
+        this.player = p;
+        player.OnHealthChanged += UpdateHealthBar;
+    }
     public void UpdateHealthBar(int damage, Player.PlayerHealth playerHealth)
     {
         // ヘルスバーの更新ロジックをここに実装
@@ -52,6 +58,11 @@ public class HealthBar : MonoBehaviour
     {
         healthBarElements.ForEach(element => Destroy(element.gameObject));
         healthBarElements.Clear();
+    }
+    private void OnDestroy()
+    {
+        Reset();
+        // player.OnHealthChanged -= UpdateHealthBar;
     }
     [ContextMenu("TestUpdate")]
     public void TestUpdate()
