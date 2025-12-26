@@ -11,9 +11,9 @@ public static class CMYKExtensions
         float b = (1 - y) * (1 - k);
         return new Color(r, g, b, 1f);
     }
-    public static Color CMYKtoRGB(Color cmyk)
+    public static Color CMYKtoRGB(CMYK cmyk)
     {
-        return CMYKtoRGB(cmyk.r, cmyk.g, cmyk.b, cmyk.a);
+        return CMYKtoRGB(cmyk.c, cmyk.m, cmyk.y, cmyk.k);
     }
     public static Color RGBtoCMYK(this Color rgb)
     {
@@ -32,7 +32,14 @@ public static class CMYKExtensions
 
         return new Color(c, m, y, k);
     }
-
+    public static Color SubtractiveLerp(Color a, Color b, float t) => CMYK.Lerp(CMYK.From(a), CMYK.From(b), t).ToColor();
+    public static Color SubtractiveBlend(this Color a, Color b)
+    {
+        CMYK ca = CMYK.From(a);
+        CMYK cb = CMYK.From(b);
+        return (ca + cb).ToColor();
+    }
+    public static void SetCMYK(this Material mat, string property, CMYK cmyk) => mat.SetColor(property, cmyk.ToColor());
 }
 [System.Serializable]
 public struct CMYK
@@ -58,11 +65,12 @@ public struct CMYK
         this.k = k;
     }
 
-    public Color ToRGB()
-    {
-        return CMYKExtensions.CMYKtoRGB(c, m, y, k);
-    }
+    public Color ToRGB() => CMYKExtensions.CMYKtoRGB(this);
+    public Color ToColor() => ToRGB();
+    public static CMYK From(Color color) => FromRGB(color);
+    public static CMYK ToCMYK(Color color) => FromRGB(color);
 
+    /// <summary> Convert from RGB Color to CMYK struct </summary>
     public static CMYK FromRGB(Color rgb)
     {
         Color cmykColor = rgb.RGBtoCMYK();
@@ -77,6 +85,18 @@ public struct CMYK
             k: 1f - (1f - a.k) * (1f - b.k)
         ).Clamped();
     }
+    public static CMYK operator *(CMYK a, float scalar)
+    {
+        return new CMYK(
+            a.c * scalar,
+            a.m * scalar,
+            a.y * scalar,
+            a.k * scalar
+        ).Clamped();
+    }
+    public static bool operator ==(CMYK a, CMYK b) => a.Equals(b);
+    public static bool operator !=(CMYK a, CMYK b) => !(a == b);
+
     public CMYK Clamped()
     {
         return new CMYK(
@@ -86,6 +106,15 @@ public struct CMYK
             Mathf.Clamp01(k)
         );
     }
+    public override bool Equals(object obj)
+    {
+        if (!(obj is CMYK cMYK)) return false;
+        return Mathf.Approximately(c, cMYK.c)
+            && Mathf.Approximately(m, cMYK.m)
+            && Mathf.Approximately(y, cMYK.y)
+            && Mathf.Approximately(k, cMYK.k);
+    }
+    public override int GetHashCode() => (c, m, y, k).GetHashCode();
     public static CMYK Lerp(CMYK a, CMYK b, float t)
     {
         t = Mathf.Clamp01(t);
@@ -96,7 +125,6 @@ public struct CMYK
             Mathf.Lerp(a.k, b.k, t)
         );
     }
-
     public static CMYK Black => new CMYK(0, 0, 0, 1);
     public static CMYK White => new CMYK(0, 0, 0, 0);
     public static CMYK Red => new CMYK(0, 1, 1, 0);
@@ -105,4 +133,11 @@ public struct CMYK
     public static CMYK Yellow => new CMYK(0, 0, 1, 0);
     public static CMYK Cyan => new CMYK(1, 0, 0, 0);
     public static CMYK Magenta => new CMYK(0, 1, 0, 0);
+    public enum PrimaryColor
+    {
+        Cyan,
+        Magenta,
+        Yellow,
+        Black
+    }
 }

@@ -8,6 +8,7 @@ public class CMYKTest : MonoBehaviour
     {
         cmykColor = CMYK.Magenta + CMYK.Yellow;
         UpdateColor(cmykColor);
+        Debug.Log(new CMYK(1, 0, 0, 0) == CMYK.Cyan);
     }
     private void OnValidate()
     {
