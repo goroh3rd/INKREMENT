@@ -17,6 +17,7 @@ public class BattleManager : MonoBehaviour
     public CardManager CardManager => cardManager;
     private Player player;
     public Player Player => player;
+    public List<Enemy> enemies;
     private BattleState state;
     public BattleState State => state;
     public event Action OnBattleStart;
@@ -28,7 +29,6 @@ public class BattleManager : MonoBehaviour
         if (player == null)
         {
             player = new Player();
-            player.health = new Player.PlayerHealth(10, 10, 10, 0); // ここの値は適当
         }
         cardManager = new CardManager();
         cardManager.drawPile = new List<Cards>(CardManager.deck);
@@ -75,6 +75,13 @@ public class BattleManager : MonoBehaviour
     {
         // 敵の行動ロジックをここに実装
         // 例: プレイヤーにダメージを与えるなど
+        foreach (var enemy in enemies)
+        {
+            if (!enemy.IsDefeated())
+            {
+                enemy.OnAction();
+            }
+        }
         StartTurn();
     }
     private void EndBattle()

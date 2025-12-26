@@ -1,4 +1,4 @@
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 
 // This class is intended to hold extension methods related to CMYK color space.
@@ -125,6 +125,30 @@ public struct CMYK
             Mathf.Lerp(a.k, b.k, t)
         );
     }
+    public static CMYK Average(params CMYK[] colors)
+    {
+        return Average((IEnumerable<CMYK>)colors);
+    }
+    public static CMYK Average(IEnumerable<CMYK> colors)
+    {
+        var colorList = new List<CMYK>(colors);
+        if (colorList.Count == 0) return Zero;
+        float totalC = 0f, totalM = 0f, totalY = 0f, totalK = 0f;
+        foreach (var color in colorList)
+        {
+            totalC += color.c;
+            totalM += color.m;
+            totalY += color.y;
+            totalK += color.k;
+        }
+        return new CMYK(
+            totalC / colorList.Count,
+            totalM / colorList.Count,
+            totalY / colorList.Count,
+            totalK / colorList.Count
+        );
+    }
+    public static CMYK Zero => new CMYK(0, 0, 0, 0);
     public static CMYK Black => new CMYK(0, 0, 0, 1);
     public static CMYK White => new CMYK(0, 0, 0, 0);
     public static CMYK Red => new CMYK(0, 1, 1, 0);

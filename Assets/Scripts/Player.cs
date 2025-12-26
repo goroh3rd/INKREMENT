@@ -69,9 +69,10 @@ public class Player : IDamageable
     public PlayerHealth health;
     public int energy = 1;
     public int maxHandSize = 7;
+    public event Action<int, PlayerHealth> OnHealthChanged;
     public Player()
     {
-        health = new PlayerHealth(10, 10, 10, 5);
+        health = new PlayerHealth(7, 2, 1, 0);
     }
     public void TakeDamage(int damage)
     {
@@ -85,5 +86,6 @@ public class Player : IDamageable
     public void OnDamageTaken(int damage, int currentHealth)
     {
         // Debug.Log($"Player took {damage} damage!");
+        OnHealthChanged?.Invoke(damage, health);
     }
 }
