@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using GorohsExtensions.CMYKColorSpace.UnityEngine;
+using GorohsExtensions.CMYKColorSpace.Tweening;
 
 public class HealthBar : MonoBehaviour
 {
@@ -52,7 +54,8 @@ public class HealthBar : MonoBehaviour
             settingPosition.y += element.bounds.size.y - 0.125f;
         }
         // 色の割合に応じて平均化
-        heartIcon.color = CMYK.Average(healthBarElements.Select(e => CMYK.From(e.color)).ToList()).ToColor();
+        Color averageColor = CMYK.Average(healthBarElements.Select(e => CMYK.From(e.color)).ToList()).ToColor();
+        heartIcon.DOColorCMYK(CMYK.From(averageColor), 0.5f);
     }
     private void Reset()
     {

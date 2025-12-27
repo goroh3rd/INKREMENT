@@ -5,6 +5,7 @@ using TMPro;
 public class EnemyUIElement : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI enemyNameText;
+    [SerializeField] private TextMeshProUGUI predictedActionText;
     [SerializeField] private Image healthBarFill;
     private Enemy enemy;
     public void Init(Enemy enemy)
@@ -17,5 +18,9 @@ public class EnemyUIElement : MonoBehaviour
     {
         float fillAmount = (float)enemy.CurrentStats.maxHealth / enemy.InitialStats.maxHealth;
         healthBarFill.fillAmount = fillAmount;
+    }
+    public void UpdatePredictedAction(string action)
+    {
+        predictedActionText.text = action;
     }
 }

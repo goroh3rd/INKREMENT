@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public abstract class Enemy : IDamageable
+public abstract class Enemy : MonoBehaviour, IDamageable
 {
     [Serializable]
     public struct EnemyStats
@@ -20,18 +20,27 @@ public abstract class Enemy : IDamageable
             return new EnemyStats(enemyName, maxHealth, attackPower);
         }
     }
-    private readonly EnemyStats initialStats;
+    [SerializeField] private readonly EnemyStats initialStats;
     public EnemyStats InitialStats => initialStats;
-    private EnemyStats currentStats;
+    [SerializeField] private EnemyStats currentStats;
     public EnemyStats CurrentStats => currentStats;
-    public Enemy(EnemyStats stats)
+    [SerializeField] protected EnemyUIElement uiElement;
+    protected BattleManager battleManager;
+    public void Init(BattleManager bm, EnemyStats stats)
     {
-        initialStats = stats.Clone();
-        currentStats = stats.Clone();
+        currentStats = stats;
+        battleManager = bm;
     }
+    protected abstract void UpdatePredictUI();
     public void TakeDamage(int damage)
     {
         currentStats.maxHealth -= damage;
+        OnDamageTaken(damage, currentStats.maxHealth);
+        UpdatePredictUI();
+    }
+    public void UpdateStats(EnemyStats newStats)
+    {
+        currentStats = newStats;
     }
     public abstract void OnAction();
     public bool IsDefeated() { return currentStats.maxHealth <= 0; }
