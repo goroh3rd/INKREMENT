@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class BattleManager : MonoBehaviour
     {
         [SerializeField] HealthBar healthBar;
         public HealthBar HealthBar => healthBar;
+        [SerializeField] private RectTransform cardArea;
+        public RectTransform CardArea => cardArea;
+        [SerializeField] private CardInterface cardInterfacePrefab;
+        public CardInterface CardInterfacePrefab => cardInterfacePrefab;
     }
     [SerializeField] private Refs refs;
     private CardManager cardManager;
@@ -31,6 +36,10 @@ public class BattleManager : MonoBehaviour
     public event Action OnBattleStart;
     public event Action<BattleState, BattleState> OnStateChange;
     public event Action OnBattleEnd;
+    public void Init()
+    {
+        cardManager = new CardManager(this);
+    }
     public void StartBattle()
     {
         state = BattleState.Start;
@@ -40,13 +49,13 @@ public class BattleManager : MonoBehaviour
         }
         enemies.ForEach(e => e.Init(this));
         refs.HealthBar.Init(player);
-        cardManager = new CardManager(this);
         OnBattleStart?.Invoke();
         ChangeState(BattleState.PlayerTurn);
     }
     public void EndTurn()
     {
         if (state != BattleState.PlayerTurn) return;
+        cardManager.hand.ForEach(card => cardManager.DiscardCard(card));
         ChangeState(BattleState.EnemyTurn);
         SolveEnemyTurn();
     }
@@ -92,5 +101,15 @@ public class BattleManager : MonoBehaviour
     private void EndBattle()
     {
         OnBattleEnd?.Invoke();
+    }
+    [ContextMenu("TestStartBattle")]
+    private void TestStartBattle()
+    {
+        Init();
+        for (int i = 0; i < 10; i++)
+        {
+            cardManager.AddToDeck(new Resist(this, Instantiate(refs.CardInterfacePrefab)));
+        }
+        StartBattle();
     }
 }

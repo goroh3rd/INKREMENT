@@ -4,10 +4,10 @@ using System.Collections.Generic;
 public class CardManager
 {
     private BattleManager battleManager;
-    public static List<Cards> deck;
-    public List<Cards> drawPile;
-    public List<Cards> hand;
-    public List<Cards> discardPile;
+    public static List<Cards> deck = new List<Cards>();
+    public List<Cards> drawPile = new List<Cards>();
+    public List<Cards> hand = new List<Cards>();
+    public List<Cards> discardPile = new List<Cards>();
     public CardManager(BattleManager b)
     {
         battleManager = b;
@@ -50,6 +50,7 @@ public class CardManager
                 Cards drawnCard = drawPile[0];
                 drawPile.RemoveAt(0);
                 hand.Add(drawnCard);
+                drawnCard.OnDraw();
             }
         }
     }
@@ -58,7 +59,12 @@ public class CardManager
         if (hand.Contains(card))
         {
             hand.Remove(card);
+            card.OnDiscard();
             discardPile.Add(card);
         }
+    }
+    public void AddToDeck(Cards card)
+    {
+        deck.Add(card);
     }
 }

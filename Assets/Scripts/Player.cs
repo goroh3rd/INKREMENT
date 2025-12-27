@@ -81,6 +81,11 @@ public class Player : IDamageable
         health.DamageAll(damage);
         OnDamageTaken(damage, health.C + health.M + health.Y + health.K);
     }
+    public void Heal(CMYK.PrimaryColor healthType, int amount)
+    {
+        health.UpdateHealth(healthType, amount);
+        OnHealthChanged?.Invoke(-amount, health);
+    }
     public bool IsDefeated()
     {
         return health.IsDefeated();
