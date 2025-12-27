@@ -1,22 +1,39 @@
+using System;
 using UnityEngine;
 
 public abstract class Enemy : IDamageable
 {
-    private int health;
-    public int Health
+    [Serializable]
+    public struct EnemyStats
     {
-        get { return health; }
-        set { health = value <= 0 ? 0 : value; }
+        public string enemyName;
+        public int maxHealth;
+        public int attackPower;
+        public EnemyStats(string name, int health, int attack)
+        {
+            enemyName = name;
+            maxHealth = health;
+            attackPower = attack;
+        }
+        public EnemyStats Clone()
+        {
+            return new EnemyStats(enemyName, maxHealth, attackPower);
+        }
     }
-    public Enemy(int initialHealth)
+    private readonly EnemyStats initialStats;
+    public EnemyStats InitialStats => initialStats;
+    private EnemyStats currentStats;
+    public EnemyStats CurrentStats => currentStats;
+    public Enemy(EnemyStats stats)
     {
-        Health = initialHealth;
+        initialStats = stats.Clone();
+        currentStats = stats.Clone();
     }
     public void TakeDamage(int damage)
     {
-        Health -= damage;
+        currentStats.maxHealth -= damage;
     }
     public abstract void OnAction();
-    public bool IsDefeated() { return Health <= 0; }
+    public bool IsDefeated() { return currentStats.maxHealth <= 0; }
     public abstract void OnDamageTaken(int damage, int currentHealth);
 }
