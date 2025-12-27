@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -37,13 +38,9 @@ public class BattleManager : MonoBehaviour
         {
             player = new Player();
         }
+        enemies.ForEach(e => e.Init(this));
         refs.HealthBar.Init(player);
-        cardManager = new CardManager();
-        cardManager.drawPile = new List<Cards>(CardManager.deck);
-        cardManager.Shuffle(cardManager.drawPile);
-        cardManager.hand = new List<Cards>();
-        cardManager.discardPile = new List<Cards>();
-        cardManager.DrawCards(5); // ここの値は適当
+        cardManager = new CardManager(this);
         OnBattleStart?.Invoke();
         ChangeState(BattleState.PlayerTurn);
     }

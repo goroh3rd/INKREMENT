@@ -3,10 +3,23 @@ using System.Collections.Generic;
 
 public class CardManager
 {
+    private BattleManager battleManager;
     public static List<Cards> deck;
     public List<Cards> drawPile;
     public List<Cards> hand;
     public List<Cards> discardPile;
+    public CardManager(BattleManager b)
+    {
+        battleManager = b;
+        battleManager.OnBattleStart += () =>
+        {
+            drawPile = new List<Cards>(deck);
+            Shuffle(drawPile);
+            hand = new List<Cards>();
+            discardPile = new List<Cards>();
+            DrawCards(5); // ここの値は適当
+        };
+    }
     public void Shuffle(List<Cards> listToShuffle)
     {
         List<Cards> shuffledList = new List<Cards>(listToShuffle);
@@ -38,6 +51,14 @@ public class CardManager
                 drawPile.RemoveAt(0);
                 hand.Add(drawnCard);
             }
+        }
+    }
+    public void DiscardCard(Cards card)
+    {
+        if (hand.Contains(card))
+        {
+            hand.Remove(card);
+            discardPile.Add(card);
         }
     }
 }

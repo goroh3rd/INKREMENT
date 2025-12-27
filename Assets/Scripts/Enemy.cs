@@ -20,15 +20,15 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             return new EnemyStats(enemyName, maxHealth, attackPower);
         }
     }
-    [SerializeField] private readonly EnemyStats initialStats;
+    [SerializeField] private EnemyStats initialStats;
     public EnemyStats InitialStats => initialStats;
-    [SerializeField] private EnemyStats currentStats;
+    private EnemyStats currentStats;
     public EnemyStats CurrentStats => currentStats;
     [SerializeField] protected EnemyUIElement uiElement;
     protected BattleManager battleManager;
-    public void Init(BattleManager bm, EnemyStats stats)
+    public void Init(BattleManager bm)
     {
-        currentStats = stats;
+        currentStats = initialStats.Clone();
         battleManager = bm;
     }
     protected abstract void UpdatePredictUI();

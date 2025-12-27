@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace GorohsExtensions.CMYKColorSpace.UnityEngine
@@ -40,6 +41,22 @@ namespace GorohsExtensions.CMYKColorSpace.UnityEngine
             CMYK ca = CMYK.From(a);
             CMYK cb = CMYK.From(b);
             return (ca + cb).ToColor();
+        }
+        public static CMYK ToCMYK(this CMYK.PrimaryColor primaryColor)
+        {
+            switch (primaryColor)
+            {
+                case CMYK.PrimaryColor.Cyan:
+                    return CMYK.Cyan;
+                case CMYK.PrimaryColor.Magenta:
+                    return CMYK.Magenta;
+                case CMYK.PrimaryColor.Yellow:
+                    return CMYK.Yellow;
+                case CMYK.PrimaryColor.Black:
+                    return CMYK.Black;
+                default:
+                    return CMYK.Zero;
+            }
         }
         public static void SetCMYK(this Material mat, string property, CMYK cmyk) => mat.SetColor(property, cmyk.ToColor());
     }

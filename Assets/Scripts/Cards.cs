@@ -3,6 +3,12 @@ using GorohsExtensions.CMYKColorSpace.UnityEngine;
 
 public abstract class Cards
 {
-    private CMYK.PrimaryColor colorType;
+    [SerializeField] protected CMYK.PrimaryColor colorType;
+    public CMYK.PrimaryColor ColorType => colorType;
+    protected CardInterface cardInterface;
+    public void Init(CardInterface cardInterface)
+    {
+        this.cardInterface = cardInterface;
+    }
     public abstract void OnPlay();
 }

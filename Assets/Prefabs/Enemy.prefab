@@ -104,6 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyNameText: {fileID: 6940836558449666254}
+  predictedActionText: {fileID: 5347883671569561809}
   healthBarFill: {fileID: 3809341487083818366}
 --- !u!1 &3952661367696470838
 GameObject:
